@@ -158,7 +158,7 @@ FTPMainWindow :: FTPMainWindow(char *line)
 			case FTP_EFFECT_SW:
 				spn = new FTPVolume(0, pp_entry[x]);
 				getRange(pp_entry[x], &min, &max, &val);
-				spn->setRange(min, max, 1);
+				spn->setRange(min, max, min + 1);
 				spn->setValue(val);
 				gb->addWidget(spn, pp_entry[x]->x_coord, pp_entry[x]->y_coord, 1, 1);
 				connect(spn, SIGNAL(valueChanged(int,void *)), this, SLOT(handle_value_changed(int,void *)));
