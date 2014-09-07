@@ -35,6 +35,9 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QIcon>
+#include <QGroupBox>
+#include <QProcess>
+#include <QMessageBox>
 
 #include <sys/queue.h>
 #include <err.h>
@@ -48,10 +51,7 @@ enum {
 	FTP_EFFECT_FB,
 	FTP_EFFECT_DUR,
 	FTP_EFFECT_VOL,
-	FTP_EFFECT_SW,
-	FTP_EFFECT_SEND_DIGITAL,
-	FTP_EFFECT_SEND_ANALOG,
-	FTP_MAX
+	FTP_EFFECT_SW
 };
 
 enum {
@@ -61,10 +61,21 @@ enum {
 	FTP_SUB_DESC,
 };
 
+#define	FTP_MIN_COORD 1
+#define	FTP_MAX_COORD 64
+
+struct FTPEntry;
+
+class FTPMainWindow;
+class FTPGroupBox;
+
+typedef TAILQ_HEAD(,FTPEntry) FTPHead_T;
+
 struct FTPEntry {
 	TAILQ_ENTRY(FTPEntry) entry;
-	char *path;
-	char *value;
+	FTPMainWindow *parent;
+	const char *path;
+	const char *value;
 	int unit;
 	int type;
 	int subtype;
@@ -72,22 +83,38 @@ struct FTPEntry {
 	int y_coord;
 };
 
-typedef TAILQ_HEAD(,FTPEntry) FTPHead_T;
+class FTPGridLayout : public QWidget, public QGridLayout
+{
+public:
+        FTPGridLayout();
+        ~FTPGridLayout();
+};
+
+class FTPGroupBox : public QGroupBox, public QGridLayout
+{
+public:
+	FTPGroupBox(const QString &);
+	~FTPGroupBox();
+};
 
 class FTPMainWindow : public QScrollArea
 {
 	Q_OBJECT;
 public:
-	FTPMainWindow();
+	FTPMainWindow(char *);
 	~FTPMainWindow();
 
-	void parse(char *);
-
 	FTPHead_T head;
-	FTPEntry **pp_entry;
+	int	pp_entries;
+	struct FTPEntry **pp_entry;
+	FTPGridLayout gl_main;
+
+	void parse(char *);
+	FTPEntry *find(int, int, int, const char *);
+	void getRange(const struct FTPEntry *, int *, int *, int *);
 
 public slots:
-
+	void handle_value_changed(int,void *);
 };
 
 #endif		/* _QFASTTRACKPROCTL_H_ */

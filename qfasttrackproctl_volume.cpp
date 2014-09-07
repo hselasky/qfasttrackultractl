@@ -151,8 +151,14 @@ FTPVolume :: paintEvent(QPaintEvent *event)
 
 	fnt.setPixelSize(3*m);
 
+	int val = (value() - min);
+	int div = (mid - min);
+
+	if (div == 0)
+		div = 1;
+
 	snprintf(buffer, sizeof(buffer), "-%d.%02d+",
-	    value() / mid, ((value() * 100) / mid) % 100);
+	    val / div, ((val * 100) / div) % 100);
 	QString descr(buffer);
 
 	paint.fillRect(QRectF(0,0,w,h), background);
