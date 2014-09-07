@@ -166,7 +166,7 @@ FTPMainWindow :: FTPMainWindow(char *line)
 			default:
 				spn = new FTPVolume(0, pp_entry[x]);
 				getRange(pp_entry[x], &min, &max, &val);
-				spn->setRange(min, max, ((max - min) / 2));
+				spn->setRange(min, max, ((max - min) / 2) + min);
 				spn->setValue(val);
 				gb->addWidget(spn, pp_entry[x]->x_coord, pp_entry[x]->y_coord, 1, 1);
 				connect(spn, SIGNAL(valueChanged(int,void *)), this, SLOT(handle_value_changed(int,void *)));
@@ -396,7 +396,7 @@ FTPMainWindow :: handle_value_changed(int value, void *arg)
 {
 	const struct FTPEntry *entry = (const struct FTPEntry *)arg;
 	QProcess p;
-	QString cmd = QString("sysctl %1.val=%2").arg(entry->path).arg(value);
+	QString cmd = QString("sysctl %1val=%2").arg(entry->path).arg(value);
 
 	p.start(cmd);
 	p.waitForFinished(-1);
