@@ -1,3 +1,6 @@
+isEmpty(PREFIX) {
+    PREFIX=/usr/local
+}
 TEMPLATE	= app
 CONFIG		+= qt release
 HEADERS		+= qfasttrackproctl.h
