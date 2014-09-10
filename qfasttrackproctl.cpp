@@ -404,7 +404,8 @@ FTPMainWindow :: handle_value_changed(int value, void *arg)
 	if (p.exitCode()) {
 		QMessageBox box;
 
-		box.setText(tr("Error executing ") + cmd);
+		box.setText(tr("Error executing ") + cmd +
+		    tr("\n" "This program might need to be run as super user."));
 		box.setStandardButtons(QMessageBox::Ok);
 		box.setIcon(QMessageBox::Critical);
 		box.setWindowIcon(QIcon(QString(":/qfasttrackproctl.png")));
