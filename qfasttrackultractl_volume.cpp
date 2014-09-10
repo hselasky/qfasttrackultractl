@@ -23,9 +23,9 @@
  * SUCH DAMAGE.
  */
 
-#include "qfasttrackproctl_volume.h"
+#include "qfasttrackultractl_volume.h"
 
-FTPVolume :: FTPVolume(QWidget *parent, void *_event_arg)
+FTUVolume :: FTUVolume(QWidget *parent, void *_event_arg)
   : QWidget(parent)
 {
 	y_pos = moving = focus = curr_delta =
@@ -37,13 +37,13 @@ FTPVolume :: FTPVolume(QWidget *parent, void *_event_arg)
 	setMaximumSize(QSize(50,50));
 }
 
-FTPVolume :: ~FTPVolume()
+FTUVolume :: ~FTUVolume()
 {
 
 }
 
 void
-FTPVolume :: mousePressEvent(QMouseEvent *event)
+FTUVolume :: mousePressEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::LeftButton) {
 		moving = 1;
@@ -53,7 +53,7 @@ FTPVolume :: mousePressEvent(QMouseEvent *event)
 }
 
 void
-FTPVolume :: mouseReleaseEvent(QMouseEvent *event)
+FTUVolume :: mouseReleaseEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::LeftButton) {
 		moving = 0;
@@ -67,7 +67,7 @@ FTPVolume :: mouseReleaseEvent(QMouseEvent *event)
 }
 
 void
-FTPVolume :: mouseMoveEvent(QMouseEvent *event)
+FTUVolume :: mouseMoveEvent(QMouseEvent *event)
 {
 	if (moving) {
 		curr_delta = ((y_pos - event->y()) * (max - min + 1)) / 128;
@@ -84,7 +84,7 @@ FTPVolume :: mouseMoveEvent(QMouseEvent *event)
 }
 
 void
-FTPVolume :: setRange(int from, int to, int middle)
+FTUVolume :: setRange(int from, int to, int middle)
 {
 	curr_pos = from;
 	min = from;
@@ -93,13 +93,13 @@ FTPVolume :: setRange(int from, int to, int middle)
 }
 
 int
-FTPVolume :: value(void) const
+FTUVolume :: value(void) const
 {
 	return (curr_pos + curr_delta);
 }
 
 void
-FTPVolume :: setValue(int value)
+FTUVolume :: setValue(int value)
 {
 	if (value > max)
 		curr_pos = max;
@@ -116,21 +116,21 @@ FTPVolume :: setValue(int value)
 }
 
 void
-FTPVolume :: enterEvent(QEvent *event)
+FTUVolume :: enterEvent(QEvent *event)
 {
 	focus = 1;
 	repaint();
 }
 
 void
-FTPVolume :: leaveEvent(QEvent *event)
+FTUVolume :: leaveEvent(QEvent *event)
 {
 	focus = 0;
 	repaint();
 }
 
 void
-FTPVolume :: paintEvent(QPaintEvent *event)
+FTUVolume :: paintEvent(QPaintEvent *event)
 {
 	QPainter paint(this);
 	QFont fnt;

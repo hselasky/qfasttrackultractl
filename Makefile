@@ -34,9 +34,9 @@ PREFIX?=/usr/local
 all: Makefile.unix
 	make -f Makefile.unix all
 
-Makefile.unix: qfasttrackproctl.pro
+Makefile.unix: qfasttrackultractl.pro
 	qmake-qt4 PREFIX=${PREFIX} DESTDIR=${DESTDIR} \
-		-o Makefile.unix qfasttrackproctl.pro
+		-o Makefile.unix qfasttrackultractl.pro
 help:
 	@echo "Targets are: all, install, clean, package, help"
 
@@ -51,18 +51,18 @@ package: clean
 	tar -cvf temp.tar --exclude="*~" --exclude="*#" \
 		--exclude=".svn" --exclude="*.orig" --exclude="*.rej" \
 		Makefile \
-		qfasttrackproctl*.pro \
-		qfasttrackproctl*.qrc \
-		qfasttrackproctl*.cpp \
-		qfasttrackproctl*.h \
-		qfasttrackproctl*.png
+		qfasttrackultractl*.pro \
+		qfasttrackultractl*.qrc \
+		qfasttrackultractl*.cpp \
+		qfasttrackultractl*.h \
+		qfasttrackultractl*.png
 
-	rm -rf qfasttrackproctl-${VERSION}
+	rm -rf qfasttrackultractl-${VERSION}
 
-	mkdir qfasttrackproctl-${VERSION}
+	mkdir qfasttrackultractl-${VERSION}
 
-	tar -xvf temp.tar -C qfasttrackproctl-${VERSION}
+	tar -xvf temp.tar -C qfasttrackultractl-${VERSION}
 
 	rm -rf temp.tar
 
-	tar --uid=0 --gid=0 -jcvf qfasttrackproctl-${VERSION}.tar.bz2 qfasttrackproctl-${VERSION}
+	tar --uid=0 --gid=0 -jcvf qfasttrackultractl-${VERSION}.tar.bz2 qfasttrackultractl-${VERSION}

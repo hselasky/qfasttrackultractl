@@ -26,15 +26,15 @@
 #ifndef _QFASTTRACKPROCTL_VOLUME_H_
 #define	_QFASTTRACKPROCTL_VOLUME_H_
 
-#include "qfasttrackproctl.h"
+#include "qfasttrackultractl.h"
 
-class FTPVolume : public QWidget
+class FTUVolume : public QWidget
 {
 	Q_OBJECT;
 
 public:
-	FTPVolume(QWidget *parent = 0, void * = 0);
-	~FTPVolume();
+	FTUVolume(QWidget *parent = 0, void * = 0);
+	~FTUVolume();
 
 	void *event_arg;
 	int curr_pos;

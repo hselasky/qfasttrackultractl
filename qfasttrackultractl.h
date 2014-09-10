@@ -44,36 +44,36 @@
 #include <sysexits.h>
 
 enum {
-	FTP_MIXER_DIGITAL,	/* playback */
-	FTP_MIXER_ANALOG,	/* record */
-	FTP_EFFECT_SEND,
-	FTP_EFFECT_RET,
-	FTP_EFFECT_FB,
-	FTP_EFFECT_DUR,
-	FTP_EFFECT_VOL,
-	FTP_EFFECT_SW
+	FTU_MIXER_DIGITAL,	/* playback */
+	FTU_MIXER_ANALOG,	/* record */
+	FTU_EFFECT_SEND,
+	FTU_EFFECT_RET,
+	FTU_EFFECT_FB,
+	FTU_EFFECT_DUR,
+	FTU_EFFECT_VOL,
+	FTU_EFFECT_SW
 };
 
 enum {
-	FTP_SUB_VAL,
-	FTP_SUB_MIN,
-	FTP_SUB_MAX,
-	FTP_SUB_DESC,
+	FTU_SUB_VAL,
+	FTU_SUB_MIN,
+	FTU_SUB_MAX,
+	FTU_SUB_DESC,
 };
 
-#define	FTP_MIN_COORD 1
-#define	FTP_MAX_COORD 64
+#define	FTU_MIN_COORD 1
+#define	FTU_MAX_COORD 64
 
-struct FTPEntry;
+struct FTUEntry;
 
-class FTPMainWindow;
-class FTPGroupBox;
+class FTUMainWindow;
+class FTUGroupBox;
 
-typedef TAILQ_HEAD(,FTPEntry) FTPHead_T;
+typedef TAILQ_HEAD(,FTUEntry) FTUHead_T;
 
-struct FTPEntry {
-	TAILQ_ENTRY(FTPEntry) entry;
-	FTPMainWindow *parent;
+struct FTUEntry {
+	TAILQ_ENTRY(FTUEntry) entry;
+	FTUMainWindow *parent;
 	const char *path;
 	const char *value;
 	int unit;
@@ -83,35 +83,35 @@ struct FTPEntry {
 	int y_coord;
 };
 
-class FTPGridLayout : public QWidget, public QGridLayout
+class FTUGridLayout : public QWidget, public QGridLayout
 {
 public:
-        FTPGridLayout();
-        ~FTPGridLayout();
+        FTUGridLayout();
+        ~FTUGridLayout();
 };
 
-class FTPGroupBox : public QGroupBox, public QGridLayout
+class FTUGroupBox : public QGroupBox, public QGridLayout
 {
 public:
-	FTPGroupBox(const QString &);
-	~FTPGroupBox();
+	FTUGroupBox(const QString &);
+	~FTUGroupBox();
 };
 
-class FTPMainWindow : public QScrollArea
+class FTUMainWindow : public QScrollArea
 {
 	Q_OBJECT;
 public:
-	FTPMainWindow(char *);
-	~FTPMainWindow();
+	FTUMainWindow(char *);
+	~FTUMainWindow();
 
-	FTPHead_T head;
+	FTUHead_T head;
 	int	pp_entries;
-	struct FTPEntry **pp_entry;
-	FTPGridLayout gl_main;
+	struct FTUEntry **pp_entry;
+	FTUGridLayout gl_main;
 
 	void parse(char *);
-	FTPEntry *find(int, int, int, const char *);
-	void getRange(const struct FTPEntry *, int *, int *, int *);
+	FTUEntry *find(int, int, int, const char *);
+	void getRange(const struct FTUEntry *, int *, int *, int *);
 
 public slots:
 	void handle_value_changed(int,void *);

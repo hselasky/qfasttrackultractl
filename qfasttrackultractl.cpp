@@ -23,14 +23,14 @@
  * SUCH DAMAGE.
  */
 
-#include "qfasttrackproctl.h"
-#include "qfasttrackproctl_volume.h"
+#include "qfasttrackultractl.h"
+#include "qfasttrackultractl_volume.h"
 
 static int
 compare(const void *_pa, const void *_pb)
 {
-	const struct FTPEntry *pa = *(struct FTPEntry **)_pa;
-	const struct FTPEntry *pb = *(struct FTPEntry **)_pb;
+	const struct FTUEntry *pa = *(struct FTUEntry **)_pa;
+	const struct FTUEntry *pb = *(struct FTUEntry **)_pb;
 	int ret;
 
 	ret = pa->unit - pb->unit;
@@ -49,11 +49,11 @@ compare(const void *_pa, const void *_pb)
 	return (ret);
 }
 
-FTPMainWindow :: FTPMainWindow(char *line)
+FTUMainWindow :: FTUMainWindow(char *line)
 {
-	FTPEntry *ptr;
-	FTPVolume *spn;
-	FTPGroupBox *gb;
+	FTUEntry *ptr;
+	FTUVolume *spn;
+	FTUGroupBox *gb;
 	char *next;
 	int num;
 	int x;
@@ -84,11 +84,11 @@ FTPMainWindow :: FTPMainWindow(char *line)
 		box.setText(tr("No supported devices found"));
 		box.setStandardButtons(QMessageBox::Ok);
 		box.setIcon(QMessageBox::Critical);
-		box.setWindowIcon(QIcon(QString(":/qfasttrackproctl.png")));
+		box.setWindowIcon(QIcon(QString(":/qfasttrackultractl.png")));
 		box.exec();
 	}
 
-	pp_entry = (FTPEntry **)malloc(sizeof(void *) * num);
+	pp_entry = (FTUEntry **)malloc(sizeof(void *) * num);
 	if (pp_entry == 0)
 		errx(EX_SOFTWARE, "Out of memory");
 	pp_entries = num;
@@ -109,29 +109,29 @@ FTPMainWindow :: FTPMainWindow(char *line)
 		int type = pp_entry[x]->type;
 
 		switch (type) {
-		case FTP_MIXER_DIGITAL:
-			gb = new FTPGroupBox(QString("PCM%1 - Digital Mixer Controls").arg(pp_entry[x]->unit));
+		case FTU_MIXER_DIGITAL:
+			gb = new FTUGroupBox(QString("PCM%1 - Digital Mixer Controls").arg(pp_entry[x]->unit));
 			break;
-		case FTP_MIXER_ANALOG:
-			gb = new FTPGroupBox(QString("PCM%1 - Analog Mixer Controls").arg(pp_entry[x]->unit));
+		case FTU_MIXER_ANALOG:
+			gb = new FTUGroupBox(QString("PCM%1 - Analog Mixer Controls").arg(pp_entry[x]->unit));
 			break;
-		case FTP_EFFECT_SEND:
-			gb = new FTPGroupBox(QString("PCM%1 - Effect Send").arg(pp_entry[x]->unit));
+		case FTU_EFFECT_SEND:
+			gb = new FTUGroupBox(QString("PCM%1 - Effect Send").arg(pp_entry[x]->unit));
 			break;
-		case FTP_EFFECT_RET:
-			gb = new FTPGroupBox(QString("PCM%1 - Effect Return").arg(pp_entry[x]->unit));
+		case FTU_EFFECT_RET:
+			gb = new FTUGroupBox(QString("PCM%1 - Effect Return").arg(pp_entry[x]->unit));
 			break;
-		case FTP_EFFECT_FB:
-			gb = new FTPGroupBox(QString("PCM%1 - Effect Feedback").arg(pp_entry[x]->unit));
+		case FTU_EFFECT_FB:
+			gb = new FTUGroupBox(QString("PCM%1 - Effect Feedback").arg(pp_entry[x]->unit));
 			break;
-		case FTP_EFFECT_DUR:
-			gb = new FTPGroupBox(QString("PCM%1 - Effect Duration").arg(pp_entry[x]->unit));
+		case FTU_EFFECT_DUR:
+			gb = new FTUGroupBox(QString("PCM%1 - Effect Duration").arg(pp_entry[x]->unit));
 			break;
-		case FTP_EFFECT_VOL:
-			gb = new FTPGroupBox(QString("PCM%1 - Effect Volume").arg(pp_entry[x]->unit));
+		case FTU_EFFECT_VOL:
+			gb = new FTUGroupBox(QString("PCM%1 - Effect Volume").arg(pp_entry[x]->unit));
 			break;
-		case FTP_EFFECT_SW:
-			gb = new FTPGroupBox(QString("PCM%1 - Effect Number").arg(pp_entry[x]->unit));
+		case FTU_EFFECT_SW:
+			gb = new FTUGroupBox(QString("PCM%1 - Effect Number").arg(pp_entry[x]->unit));
 			break;
 		default:
 			gb = 0;
@@ -147,7 +147,7 @@ FTPMainWindow :: FTPMainWindow(char *line)
 		int min, max, val;
 
 		for (; x != y; x++) {
-			if (pp_entry[x]->subtype != FTP_SUB_DESC)
+			if (pp_entry[x]->subtype != FTU_SUB_DESC)
 				continue;
 			if (coord_x_max < pp_entry[x]->x_coord)
 				coord_x_max = pp_entry[x]->x_coord;
@@ -155,8 +155,8 @@ FTPMainWindow :: FTPMainWindow(char *line)
 				coord_y_max = pp_entry[x]->y_coord;
 
 			switch (type) {
-			case FTP_EFFECT_SW:
-				spn = new FTPVolume(0, pp_entry[x]);
+			case FTU_EFFECT_SW:
+				spn = new FTUVolume(0, pp_entry[x]);
 				getRange(pp_entry[x], &min, &max, &val);
 				spn->setRange(min, max, min + 1);
 				spn->setValue(val);
@@ -164,7 +164,7 @@ FTPMainWindow :: FTPMainWindow(char *line)
 				connect(spn, SIGNAL(valueChanged(int,void *)), this, SLOT(handle_value_changed(int,void *)));
 				break;
 			default:
-				spn = new FTPVolume(0, pp_entry[x]);
+				spn = new FTUVolume(0, pp_entry[x]);
 				getRange(pp_entry[x], &min, &max, &val);
 				spn->setRange(min, max, ((max - min) / 2) + min);
 				spn->setValue(val);
@@ -175,13 +175,13 @@ FTPMainWindow :: FTPMainWindow(char *line)
 		}
 		for (val = 1; val <= coord_x_max; val++) {
 			switch (type) {
-			case FTP_MIXER_DIGITAL:
+			case FTU_MIXER_DIGITAL:
 				gb->addWidget(new QLabel(QString("DIn%1").arg(val)), val, 0, 1, 1);
 				break;
-			case FTP_MIXER_ANALOG:
+			case FTU_MIXER_ANALOG:
 				gb->addWidget(new QLabel(QString("AIn%1").arg(val)), val, 0, 1, 1);
 				break;
-			case FTP_EFFECT_SEND:
+			case FTU_EFFECT_SEND:
 				gb->addWidget(new QLabel(QString("XIn%1").arg(val)), val, 0, 1, 1);
 				break;
 			default:
@@ -190,14 +190,14 @@ FTPMainWindow :: FTPMainWindow(char *line)
 		}
 		for (val = 1; val <= coord_y_max; val++) {
 			switch (type) {
-			case FTP_MIXER_DIGITAL:
-			case FTP_MIXER_ANALOG:
+			case FTU_MIXER_DIGITAL:
+			case FTU_MIXER_ANALOG:
 				gb->addWidget(new QLabel(QString("Out%1").arg(val)), 0, val, 1, 1);
 				break;
-			case FTP_EFFECT_RET:
+			case FTU_EFFECT_RET:
 				gb->addWidget(new QLabel(QString("Ret%1").arg(val)), 0, val, 1, 1);
 				break;
-			case FTP_EFFECT_SEND:
+			case FTU_EFFECT_SEND:
 				gb->addWidget(new QLabel((val == 2) ? QString("Analog") : QString("Digital")), 0, val, 1, 1);
 				break;
 			default:
@@ -206,17 +206,17 @@ FTPMainWindow :: FTPMainWindow(char *line)
 		}
 		gl_main.addWidget(gb, num++, 0, 1, 1);	
 	}
-        setWindowTitle(QString("FastTrack Pro Control Panel"));
-        setWindowIcon(QIcon(QString(":/qfasttrackproctl.png")));
+        setWindowTitle(QString("FastTrackUltra Control Panel"));
+        setWindowIcon(QIcon(QString(":/qfasttrackultractl.png")));
 	setWidget(&gl_main);
 }
 
-struct FTPEntry *
-FTPMainWindow :: find(int unit, int type, int subtype, const char *path)
+struct FTUEntry *
+FTUMainWindow :: find(int unit, int type, int subtype, const char *path)
 {
-	struct FTPEntry temp;
-	struct FTPEntry *ptemp = &temp;
-	struct FTPEntry **pretval;
+	struct FTUEntry temp;
+	struct FTUEntry *ptemp = &temp;
+	struct FTUEntry **pretval;
 
 	memset(&temp, 0, sizeof(temp));
 
@@ -225,7 +225,7 @@ FTPMainWindow :: find(int unit, int type, int subtype, const char *path)
 	temp.subtype = subtype;
 	temp.path = path;
 
-	pretval = (struct FTPEntry **)bsearch(&ptemp, pp_entry, pp_entries, sizeof(void *), &compare);
+	pretval = (struct FTUEntry **)bsearch(&ptemp, pp_entry, pp_entries, sizeof(void *), &compare);
 	if (pretval == 0)
 		return (0);
 
@@ -233,16 +233,16 @@ FTPMainWindow :: find(int unit, int type, int subtype, const char *path)
 }
 
 void
-FTPMainWindow :: getRange(const struct FTPEntry *pentry, int *pmin,
+FTUMainWindow :: getRange(const struct FTUEntry *pentry, int *pmin,
     int *pmax, int *pval)
 {
-	struct FTPEntry *entry_min;
-	struct FTPEntry *entry_max;
-	struct FTPEntry *entry_val;
+	struct FTUEntry *entry_min;
+	struct FTUEntry *entry_max;
+	struct FTUEntry *entry_val;
 
-	entry_min = find(pentry->unit, pentry->type, FTP_SUB_MIN, pentry->path);
-	entry_max = find(pentry->unit, pentry->type, FTP_SUB_MAX, pentry->path);
-	entry_val = find(pentry->unit, pentry->type, FTP_SUB_VAL, pentry->path);
+	entry_min = find(pentry->unit, pentry->type, FTU_SUB_MIN, pentry->path);
+	entry_max = find(pentry->unit, pentry->type, FTU_SUB_MAX, pentry->path);
+	entry_val = find(pentry->unit, pentry->type, FTU_SUB_VAL, pentry->path);
 
 	if (entry_min == 0 || entry_max == 0 || entry_val == 0) {
 		*pmin = *pmax = *pval = 0;
@@ -264,14 +264,14 @@ FTPMainWindow :: getRange(const struct FTPEntry *pentry, int *pmin,
 	}
 }
 
-FTPMainWindow :: ~FTPMainWindow()
+FTUMainWindow :: ~FTUMainWindow()
 {
 }
 
 void
-FTPMainWindow :: parse(char *line)
+FTUMainWindow :: parse(char *line)
 {
-	struct FTPEntry *pentry;
+	struct FTUEntry *pentry;
 	char *ptr;
 	char sub[strlen(line) + 1];
 	int unit = -1;
@@ -287,40 +287,40 @@ FTPMainWindow :: parse(char *line)
 
 	if (sscanf(line, "dev.pcm.%d.mixer.effect_send_%d.%s",
 		   &unit, &num, sub) == 3) {
-		type = FTP_EFFECT_SEND;
+		type = FTU_EFFECT_SEND;
 	} else if (sscanf(line, "dev.pcm.%d.mixer.effect_ret_%d.%s",
 		   &unit, &num, sub) == 3) {
-		type = FTP_EFFECT_RET;
+		type = FTU_EFFECT_RET;
 	} else if (sscanf(line, "dev.pcm.%d.mixer.effect_fb_%d.%s",
 		   &unit, &num, sub) == 3) {
-		type = FTP_EFFECT_FB;
+		type = FTU_EFFECT_FB;
 	} else if (sscanf(line, "dev.pcm.%d.mixer.effect_dur_%d.%s",
 		   &unit, &num, sub) == 3) {
-		type = FTP_EFFECT_DUR;
+		type = FTU_EFFECT_DUR;
 	} else if (sscanf(line, "dev.pcm.%d.mixer.effect_vol_%d.%s",
 		   &unit, &num, sub) == 3) {
-		type = FTP_EFFECT_VOL;
+		type = FTU_EFFECT_VOL;
 	} else if (sscanf(line, "dev.pcm.%d.mixer.effect_%d.%s",
 		   &unit, &num, sub) == 3) {
-		type = FTP_EFFECT_SW;
+		type = FTU_EFFECT_SW;
 	} else if (sscanf(line, "dev.pcm.%d.mixer.mix_rec_%d.%s",
 		   &unit, &num, sub) == 3) {
-		type = FTP_MIXER_ANALOG;
+		type = FTU_MIXER_ANALOG;
 	} else if (sscanf(line, "dev.pcm.%d.mixer.mix_play_%d.%s",
 		   &unit, &num, sub) == 3) {
-		type = FTP_MIXER_DIGITAL;
+		type = FTU_MIXER_DIGITAL;
 	} else {
 		return;
 	}
 
 	if (strcmp(sub, "desc:") == 0)
-		subtype = FTP_SUB_DESC;
+		subtype = FTU_SUB_DESC;
 	else if (strcmp(sub, "val:") == 0)
-		subtype = FTP_SUB_VAL;
+		subtype = FTU_SUB_VAL;
 	else if (strcmp(sub, "min:") == 0)
-		subtype = FTP_SUB_MIN;
+		subtype = FTU_SUB_MIN;
 	else if (strcmp(sub, "max:") == 0)
-		subtype = FTP_SUB_MAX;
+		subtype = FTU_SUB_MAX;
 	else
 		return;
 
@@ -335,7 +335,7 @@ FTPMainWindow :: parse(char *line)
 	while (*ptr == ' ')
 		ptr++;
 
-	pentry = (struct FTPEntry *)malloc(sizeof(*pentry));
+	pentry = (struct FTUEntry *)malloc(sizeof(*pentry));
 	if (pentry == 0)
 		errx(EX_SOFTWARE, "Out of memory");
 
@@ -348,23 +348,23 @@ FTPMainWindow :: parse(char *line)
 	pentry->subtype = subtype;
 	pentry->parent = this;
 
-	if (subtype == FTP_SUB_DESC) {
+	if (subtype == FTU_SUB_DESC) {
 	  switch (type) {
-	  case FTP_MIXER_ANALOG:
+	  case FTU_MIXER_ANALOG:
 		if (sscanf(ptr, "AIn%d - Out%d Record Volume",
 		     &pentry->x_coord, &pentry->y_coord) != 2) {
 			pentry->x_coord = 0;
 			pentry->y_coord = 0;
 		}
 		break;
-	  case FTP_MIXER_DIGITAL:
+	  case FTU_MIXER_DIGITAL:
 		if (sscanf(ptr, "DIn%d - Out%d Playback Volume",
 		     &pentry->x_coord, &pentry->y_coord) != 2) {
 			pentry->x_coord = 0;
 			pentry->y_coord = 0;
 		}
 		break;
-	  case FTP_EFFECT_SEND:
+	  case FTU_EFFECT_SEND:
 		if (sscanf(ptr, "Effect Send DIn%d Volume",
 		     &pentry->x_coord) == 1) {
 			pentry->y_coord = 1;
@@ -376,7 +376,7 @@ FTPMainWindow :: parse(char *line)
 			pentry->y_coord = 0;
 		}
 		break;
-	  case FTP_EFFECT_RET:
+	  case FTU_EFFECT_RET:
 		pentry->x_coord = 1;
 		if (sscanf(ptr, "Effect Return %d Volume",
 		    &pentry->y_coord) != 1) {
@@ -392,9 +392,9 @@ FTPMainWindow :: parse(char *line)
 }
 
 void
-FTPMainWindow :: handle_value_changed(int value, void *arg)
+FTUMainWindow :: handle_value_changed(int value, void *arg)
 {
-	const struct FTPEntry *entry = (const struct FTPEntry *)arg;
+	const struct FTUEntry *entry = (const struct FTUEntry *)arg;
 	QProcess p;
 	QString cmd = QString("sysctl %1val=%2").arg(entry->path).arg(value);
 
@@ -408,27 +408,27 @@ FTPMainWindow :: handle_value_changed(int value, void *arg)
 		    tr("\n" "This program might need to be run as super user."));
 		box.setStandardButtons(QMessageBox::Ok);
 		box.setIcon(QMessageBox::Critical);
-		box.setWindowIcon(QIcon(QString(":/qfasttrackproctl.png")));
+		box.setWindowIcon(QIcon(QString(":/qfasttrackultractl.png")));
 		box.exec();
 	}
 }
 
-FTPGroupBox :: FTPGroupBox(const QString &title)
+FTUGroupBox :: FTUGroupBox(const QString &title)
   : QGroupBox(title), QGridLayout(this)
 {
 
 }
 
-FTPGroupBox :: ~FTPGroupBox()
+FTUGroupBox :: ~FTUGroupBox()
 {
 
 }
 
-FTPGridLayout :: FTPGridLayout() : QGridLayout(this)
+FTUGridLayout :: FTUGridLayout() : QGridLayout(this)
 {
 }
 
-FTPGridLayout :: ~FTPGridLayout()
+FTUGridLayout :: ~FTUGridLayout()
 {
 }
 
@@ -448,13 +448,13 @@ main(int argc, char **argv)
 		box.setText(QObject::tr("Error executing ") + cmd);
 		box.setStandardButtons(QMessageBox::Ok);
 		box.setIcon(QMessageBox::Critical);
-		box.setWindowIcon(QIcon(QString(":/qfasttrackproctl.png")));
+		box.setWindowIcon(QIcon(QString(":/qfasttrackultractl.png")));
 		box.exec();
 	}
 
 	QByteArray data = p.readAllStandardOutput();
 
-	FTPMainWindow mw((char *)data.data());
+	FTUMainWindow mw((char *)data.data());
 
 	mw.show();
 
