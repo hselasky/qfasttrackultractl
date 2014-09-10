@@ -55,7 +55,8 @@ package: clean
 		qfasttrackultractl*.qrc \
 		qfasttrackultractl*.cpp \
 		qfasttrackultractl*.h \
-		qfasttrackultractl*.png
+		qfasttrackultractl*.png \
+		qfasttrackultractl*.desktop
 
 	rm -rf qfasttrackultractl-${VERSION}
 
