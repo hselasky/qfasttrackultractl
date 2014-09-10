@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=FastTrack Pro Control Panel
-Comment=Control Panel for FastTrack Pro USB audio devices
+Name=FastTrackUltra Control Panel
+Comment=Control Panel for FastTrackUltra USB audio devices
 Exec=qfasttrackultractl
 Icon=qfasttrackultractl
 Categories=AudioVideo;Audio
