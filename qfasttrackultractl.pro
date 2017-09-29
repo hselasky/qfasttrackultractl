@@ -1,6 +1,9 @@
 isEmpty(PREFIX) {
     PREFIX=/usr/local
 }
+greaterThan(QT_MAJOR_VERSION, 4) {
+QT += widgets
+}
 TEMPLATE	= app
 CONFIG		+= qt release
 HEADERS		+= qfasttrackultractl.h

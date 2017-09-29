@@ -35,7 +35,7 @@ all: Makefile.unix
 	make -f Makefile.unix all
 
 Makefile.unix: qfasttrackultractl.pro
-	qmake-qt4 PREFIX=${PREFIX} DESTDIR=${DESTDIR} \
+	qmake PREFIX=${PREFIX} DESTDIR=${DESTDIR} \
 		-o Makefile.unix qfasttrackultractl.pro
 help:
 	@echo "Targets are: all, install, clean, package, help"
